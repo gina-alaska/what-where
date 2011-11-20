@@ -1,4 +1,4 @@
 
-for I in source-exports/where/*; do composite where.png $I out/`basename $I`.png; done
+for I in source-exports/where/*; do composite where.png $I out/`basename $I`; done
 
-for I in source-exports/what/*; do composite what.png $I out/`basename $I`.png; done
+for I in source-exports/what/*; do composite what.png $I out/`basename $I`; done

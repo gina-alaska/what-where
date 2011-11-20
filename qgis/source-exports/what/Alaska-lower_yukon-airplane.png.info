@@ -1,0 +1,7 @@
+name: Alaska-lower_yukon-airplane.png
+front: Color infrared pan-sharpened SPOT5 image 
+hint: Single airplane.  What is causing the ghost plane?
+location: Lower Yukon. SPOT5 satellites collects 10m color imagery at a slightly different time that the 2.5m black and white imagery cauing the lower resolution ghost plane
+source: SDMI ortho 2010 SPOT5
+copyright: UAF-GINA - includes material © CNES 2010, Distribution Spot Image S.A., France, SICORP, USA, all rights reserved
+license: Creative Commons BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
