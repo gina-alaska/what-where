@@ -1,7 +1,7 @@
 What Where Project
 ==================
 
-[qgis]
+[qgis](what-where/tree/master/qgis)
 ------
 
 A GINA/AlaskaView outreach effort to help make Geography Week
