@@ -1,8 +1,8 @@
 What Where Project
 ==================
 
-[qgis](what-where/tree/master/gis)
--------------
+[qgis]
+------
 
 A GINA/AlaskaView outreach effort to help make Geography Week
 booth more interesting by providing some "flash card" style
