@@ -1,0 +1,35 @@
+#!/bin/env ruby
+
+require 'optparse'
+require 'pp'
+
+
+OPTIONS = {
+  :buffer => 50,
+  :verbose => false
+}
+
+ARGV.options do |o|
+  script_name = File.basename($0)
+  o.banner = "Usage: #{script_name} [OPTIONS] INPUT_CSV OUTPUT_DIR"
+  o.define_head "describe it ya.."
+  o.separator ""
+  o.on("-b", "--buffer=[int]", Integer, 
+      "box size in KM. Default: #{OPTIONS[:buffer]}") { |b| OPTIONS[:buffer]=b }
+  o.on("-v", "--verbose", "be verbose") { |v| OPTIONS[:verbose] = v }
+  o.separator ""
+  o.on_tail("-h","--help","Show this help.") { puts o; exit }
+  HELP=o.to_s
+end
+
+VERBOSE=OPTIONS[:verbose]
+
+puts "buffer: #{OPTIONS[:buffer]}" if VERBOSE
+
+input_file = ARGV.shift || raise("missing input CVS")
+output_dir = ARGV.shfit || raise("missing output directory")
+
+require 'cvs'
+
+# load up and sanity check CSV file has string, float, float format
+# then figure out what 
