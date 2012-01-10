@@ -1,7 +1,7 @@
 What Where Project
 ==================
 
-[qgis](qgis)
+[qgis](./qgis)
 -------------
 
 A GINA/AlaskaView outreach effort to help make Geography Week
@@ -9,7 +9,7 @@ booth more interesting by providing some "flash card" style
 maps that people who wonder by can make a guess of what or
 where a map is from.
 
-[extractor](extractor)
+[extractor](/extractor)
 -----------------------
 
 Tools used to create out reach materials for others to use for teaching
