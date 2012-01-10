@@ -17,7 +17,7 @@ the specified output-dir (creates that dir if it does not exist)
 
     *clipum* [-b 50]  _input-csv_ _output-dir_
 
-> and then I have a note
+> and then I have a note 
 > and then I have a second
 
 no note here
