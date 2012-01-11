@@ -2,11 +2,12 @@
 
 require 'optparse'
 require 'pp'
-
+require 'csv'
 
 OPTIONS = {
   :buffer => 50,
-  :verbose => false
+  :verbose => false,
+  :geotiff => %w{ -co TILED=YES -co COMPRESS=LZW }
 }
 
 ARGV.options do |o|
@@ -27,9 +28,41 @@ VERBOSE=OPTIONS[:verbose]
 puts "buffer: #{OPTIONS[:buffer]}" if VERBOSE
 
 input_file = ARGV.shift || raise("missing input CVS")
-output_dir = ARGV.shfit || raise("missing output directory")
+output_dir = ARGV.shift || raise("missing output directory")
 
-require 'cvs'
+unless File.directory?('sources')
+  puts "FATAL: no 'sources' folder found."
+  puts "I expect to look in a sources folder and extract from the files there"
+  exit 1
+end
 
-# load up and sanity check CSV file has string, float, float format
-# then figure out what 
+sources = Dir.entries('sources').map { |f| f if File.file?(f) }.compact
+
+if sources.size < 1 
+  puts "ERROR: no images in sources directory to work with"
+  exit 1
+end
+puts "found #{sources.size} source images: #{sources.join(", ")}"
+
+# load up and loop through the CSV file reporting
+# the name/x/y of each as a sanity check for ourselves.
+# and shoving the valid ones into targets array:
+targets = [] # array of hashes: { :name =>, :x =>, :y }
+
+puts "TODO: write code for loading targets"
+exit
+
+def gdal_translate(target,source,output)
+# gdal_translate -projwin (bounding box) (source) (output)
+# real example 
+#  gdal_translate -projwin -218505 733188 -217487 732413 input.vrt output.tif 
+#  boundbox is: upper left, lower left, upper right, lower right
+  b = OPTIONS[:buffer]/2
+  x = target[:x]
+  y = target[:y]
+  bbox = [ x-b, y+b, x+b, y-b ]
+  cmd = %w{ gdal_tranlsate -projwin } + OPTIONS[:geotiff] + 
+        bbox + [ source, output ]
+  #system(*cmd)
+  puts ">> " + cmd.join(" ")
+end
