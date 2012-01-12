@@ -36,7 +36,7 @@ unless File.directory?('sources')
   exit 1
 end
 
-sources = Dir.entries('sources').map { |f| f if File.file?(f) }.compact
+sources = Dir.entries('sources').map { |f| f if File.directory?(f) }.compact
 
 if sources.size < 1 
   puts "ERROR: no images in sources directory to work with"
@@ -49,8 +49,11 @@ puts "found #{sources.size} source images: #{sources.join(", ")}"
 # and shoving the valid ones into targets array:
 targets = [] # array of hashes: { :name =>, :x =>, :y }
 
-puts "TODO: write code for loading targets"
-exit
+csv = CSV.open(input_file, 'r', :headers=>:first_row)
+csv.each do |row|
+  puts row[0] + "," + row[1] + "," + row[2]
+  targets.push({ :name => row[0], :x => row[1].to_f, :y => row[2].to_f })
+end
 
 def gdal_translate(target,source,output)
 # gdal_translate -projwin (bounding box) (source) (output)
