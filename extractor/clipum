@@ -67,9 +67,10 @@ def gdal_translate(target,source,output)
   b = OPTIONS[:buffer]/2
   x = target[:x]
   y = target[:y]
-  bbox = [ x-b, y+b, x+b, y-b ]
-  cmd = [ 'gdal_translate' , OPTIONS[:geotiff] , '-projwin' , *bbox , source, output ]
+  bbox = [ x-b, y+b, x+b, y-b ].map {|i| i.to_s}
+  cmd = [ 'gdal_translate' , *OPTIONS[:geotiff] , '-projwin' , *bbox , source, output ]
   puts "" + cmd.join(" ")
+  puts cmd.inspect
   system(*cmd) # FIXME
 end
 
@@ -87,5 +88,6 @@ targets.each do |t|
     file_name = File.basename(s,'.*') + ".tif"
     o = File.join(target_dir,file_name)
     gdal_translate(t,s,o)
+    sleep 0.05 # let a Control-C take effect
   end
 end
