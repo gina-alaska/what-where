@@ -3,9 +3,10 @@
 require 'optparse'
 require 'pp'
 require 'csv'
+require 'fileutils'
 
 OPTIONS = {
-  :buffer => 50,
+  :buffer => 50000,
   :verbose => false,
   :geotiff => %w{ -co TILED=YES -co COMPRESS=LZW }
 }
@@ -16,7 +17,7 @@ ARGV.options do |o|
   o.define_head "describe it ya.."
   o.separator ""
   o.on("-b", "--buffer=[int]", Integer, 
-      "box size in KM. Default: #{OPTIONS[:buffer]}") { |b| OPTIONS[:buffer]=b }
+      "box size in KM. Default: #{OPTIONS[:buffer]}") { |b| OPTIONS[:buffer]=(b*1000) }
   o.on("-v", "--verbose", "be verbose") { |v| OPTIONS[:verbose] = v }
   o.separator ""
   o.on_tail("-h","--help","Show this help.") { puts o; exit }
@@ -29,6 +30,7 @@ puts "buffer: #{OPTIONS[:buffer]}" if VERBOSE
 
 input_file = ARGV.shift || raise("missing input CVS")
 output_dir = ARGV.shift || raise("missing output directory")
+source_dir = 'sources'
 
 unless File.directory?('sources')
   puts "FATAL: no 'sources' folder found."
@@ -36,7 +38,7 @@ unless File.directory?('sources')
   exit 1
 end
 
-sources = Dir.entries('sources').map { |f| f if File.directory?(f) }.compact
+sources = Dir.entries(source_dir).map { |f| File.join(source_dir,f) unless File.directory?(f) }.compact
 
 if sources.size < 1 
   puts "ERROR: no images in sources directory to work with"
@@ -51,9 +53,11 @@ targets = [] # array of hashes: { :name =>, :x =>, :y }
 
 csv = CSV.open(input_file, 'r', :headers=>:first_row)
 csv.each do |row|
-  puts row[0] + "," + row[1] + "," + row[2]
+#  puts row[0] + "," + row[1] + "," + row[2]
   targets.push({ :name => row[0], :x => row[1].to_f, :y => row[2].to_f })
 end
+
+puts "loaded #{targets.size} targets from #{input_file}"
 
 def gdal_translate(target,source,output)
 # gdal_translate -projwin (bounding box) (source) (output)
@@ -64,8 +68,24 @@ def gdal_translate(target,source,output)
   x = target[:x]
   y = target[:y]
   bbox = [ x-b, y+b, x+b, y-b ]
-  cmd = %w{ gdal_tranlsate -projwin } + OPTIONS[:geotiff] + 
-        bbox + [ source, output ]
-  #system(*cmd)
-  puts ">> " + cmd.join(" ")
+  cmd = [ 'gdal_translate' , OPTIONS[:geotiff] , '-projwin' , *bbox , source, output ]
+  puts "" + cmd.join(" ")
+  system(*cmd) # FIXME
+end
+
+#targets = targets[0..3] # lets just do the first 3 while we develop
+
+unless File.directory?(output_dir)
+  puts "output dir does not exist - creating it"
+  FileUtils.mkdir(output_dir)
+end
+
+targets.each do |t|
+  target_dir = File.join(output_dir,t[:name])
+  FileUtils.mkdir(target_dir) unless File.directory?(target_dir)
+  sources.each do |s|
+    file_name = File.basename(s,'.*') + ".tif"
+    o = File.join(target_dir,file_name)
+    gdal_translate(t,s,o)
+  end
 end
