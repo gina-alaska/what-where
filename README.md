@@ -6,7 +6,7 @@ What Where Project
 
 A GINA/AlaskaView outreach effort to help make Geography Week
 booth more interesting by providing some "flash card" style
-maps that people who wonder by can make a guess of what or
+maps that people who wander by can make a guess of what or
 where a map is from.
 
 [extractor](/gina-alaska/what-where/tree/master/extractor)
